@@ -1,0 +1,27 @@
+# ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ #
+## Compose file
+# - Setup for devlopment.
+# - Uses .env file for environment variables.
+# - Exposes the Node debug port.
+# - Syncs local ./source directory with container.
+# ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ #
+
+version: '3.7'
+
+services:
+  node:
+    build:
+      context: ./
+      args:
+        - WORK_DIRECTORY=${WORK_DIRECTORY}
+    container_name: app
+    env_file:
+      - .env
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}
+      - ${SERVER_DEBUG_PORT}:9229
+    volumes:
+      - ./app.js:/srv/app/app.js
+      - ./source/:/srv/app/source
+    restart: on-failure
+    command: ["npm", "run", "devserver"]
